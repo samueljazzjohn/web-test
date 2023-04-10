@@ -28,6 +28,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+// Endpoint for login action
 app.get('/login', function(req, res, next) {
     console.log(req.query.email)
     userModel.findOne({email:req.query.email}).then((doc)=>{
@@ -40,7 +42,7 @@ app.get('/login', function(req, res, next) {
             email: doc.email
           }
 
-        const token = jwt.sign(data, process.env.JWT_SECRET_KEY,{ expiresIn: '1m' });
+        const token = jwt.sign(data, process.env.JWT_SECRET_KEY,{ expiresIn: '20s' });
 
         doc={...doc,token:token}
         console.log("data",data)
@@ -51,6 +53,7 @@ app.get('/login', function(req, res, next) {
   });
 
 
+//   Endpoint for verifiying if session expired or not
   app.get('/check-session',(req,res,next)=>{
     console.log("second:",req.headers.authorization.split(' ')[1])
     const Bearer = req.headers.authorization.split(' ')[1]
